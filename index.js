@@ -39,7 +39,8 @@ const build = async () => {
   try {
     config = await modpack.loadModpackConfig(path.join(modpackPath, 'modpack.yaml'))
   } catch (err) {
-    log.error('Failed to load modpack.yaml: %s', err)
+    log.fatal('Failed to load modpack.yaml: %s', err)
+    process.exit(1)
   }
 
   log.info('building Modpack %s version %s', config.name, config.version)
