@@ -84,15 +84,24 @@ const install = async () => {
   }
 }
 
+const commands = {
+  build,
+  install,
+  version: () => {
+    const v = require('./package.json').version
+    console.log('modpacker v'+v)
+  }
+}
+
 // TLA wrapper
+// TODO(jaredallard): add help
 const main = async () => {
-  if (options.command === 'build') {
-    await build()
-  } else if (options.command === 'install') {
-    await install()
+  const fn = commands[options.command]
+  if (fn) { 
+    await fn() 
   } else {
-    // TODO(jaredallard): show help page here
-    console.log('Invalid option')
+    log.fatal('unknown command %s', options.command || '""')
+    process.exit(1)
   }
 }
 
