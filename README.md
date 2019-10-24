@@ -7,7 +7,13 @@ A CLI, minecraft launcher compatible, minecraft modpack bundler and installer
 Until binaries are created, you can install this via [npm](https://npmjs.org):
 
 ```bash
-$ npm install -g git+https://github.com/jaredallard/modpacker
+$ npm install -g modpacker
+```
+
+or, if you prefer yarn (like I do)
+
+```bash
+$ yarn global add modpacker
 ```
 
 ## Usage
