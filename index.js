@@ -133,7 +133,7 @@ const commands = {
         ]
       },
       {
-        content: 'Run `{bold modpack help <command>}` for help with a specific command',
+        content: 'Run `{bold modpacker help <command>}` for help with a specific command',
         raw: true
       }
     ]

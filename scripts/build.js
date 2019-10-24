@@ -25,6 +25,8 @@ const build = async () => {
 
   for (const target of os) {
     for (const arch of archs) {
+      // no support for x86 mac anymore
+      if (target === 'mac' && arch === 'x86') continue
       targets.push(`${target}-${arch}-${nodeVersion}`)
     }
   }
@@ -46,6 +48,7 @@ const build = async () => {
     await nexe.compile({
       input: 'index.js',
       name: 'modpacker',
+      target,
       loglevel: 'silent',
       cwd: path.join(__dirname, '..'),
       output: path.join(buildBase, output),
