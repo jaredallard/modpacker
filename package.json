@@ -6,6 +6,9 @@
   "repository": "git+ssh://git@github.com/jaredallard/modpacker",
   "author": "Jared Allard <jaredallard@outlook.com>",
   "license": "BSD-3-Clause",
+  "bin": {
+    "modpacker": "./bin/modpacker.js"
+  },
   "dependencies": {
     "async": "^3.1.0",
     "command-line-args": "^5.1.1",
