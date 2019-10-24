@@ -48,6 +48,18 @@ This will take care of installing forge, installing the modpack, and creating a 
 
 If you launch the Minecraft launcher, you will see your ModPack is available as the entry in `name` of the config.
 
+### Developing
+
+Make sure you have eslint installed to enforce style rules and better code in general.
+
+To build binaries, run:
+
+```bash
+$ yarn build
+```
+
+Tests will be added one day, maybe.
+
 ## License
 
 BSD-3-Clause
