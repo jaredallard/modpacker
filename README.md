@@ -2,6 +2,8 @@
 
 A CLI, minecraft launcher compatible, minecraft modpack bundler and installer
 
+![modpacker help screen](.github/modpacker.png)
+
 ## Installation
 
 Until binaries are created, you can install this via [npm](https://npmjs.org):
