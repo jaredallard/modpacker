@@ -51,7 +51,7 @@ const build = async () => {
   if (newMods.length === 0 && removedMods.length === 0) {
     log.warn('No mods were removed or added, this is a no-op unless you modified configs or options')
   } else {
-    log.info('%d mods were added', newMods)
+    log.info('%d mods were added', newMods.length)
   }
 
   if (removedMods.length !== 0) {
