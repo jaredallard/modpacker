@@ -8,17 +8,18 @@
 
 'use strict'
 
-const log = require('signale')
+const log = require('signale');
 const commandLineUsage = require('command-line-usage')
 const modpack = require('./lib/modpack')
 const path = require('path')
 const chalk = require('chalk')
-
+const commandLineArgs = require('command-line-args')
+const promptly = require('promptly')
+const { Client, Authenticator } = require('minecraft-launcher-core');
 const optionDefinitions = [
   { name: 'command', defaultOption: true }
 ]
 
-const commandLineArgs = require('command-line-args')
 const options = commandLineArgs(optionDefinitions, { stopAtFirstUnknown: true })
 const commandOptions = options._unknown || []
 
@@ -87,6 +88,83 @@ const install = async () => {
   log.success('installed modpack')
 }
 
+const launch = async () => {
+  const optionDefinitions = [
+    { name: 'modpack', type: String, defaultOption: true }
+  ]
+
+  const options = commandLineArgs(optionDefinitions, { argv: commandOptions })
+
+  const modpackName = options['modpack']
+  if (!modpackName) {
+    log.fatal('missing modpack name')
+    process.exit(1)
+  }
+
+  const config = await modpack.loadModpackerConfig()
+  const modpackConfig = config.installedModpacks[modpackName]
+
+  if (!modpack) {
+    log.fatal('modpack %s isnt installed', modpackName)
+    process.exit(1)
+  }
+
+  log.info('launching modpack %s', modpackName)
+
+  const launcher = new Client()
+
+  const opts = {
+    authorization: await modpack.loadAuth(),
+    root: path.join(await modpack.getMinecraftHome(), 'modpacks/', path.normalize(modpackName).replace(/^(\.\.(\/|\\|$))+/, '')),
+
+    // TODO(jaredallard): don't include this unless we need too
+    forge: path.join(await modpack.getMinecraftHome(), 'forge/', modpackConfig.forge.version, 'forge.jar'),
+    version: {
+      number: modpackConfig.minecraft.version,
+      type: "release"
+    },
+    memory: {
+      max: "8000",
+      min: "4000"
+    }
+  }
+
+  launcher.launch(opts);
+
+  launcher.on('debug', log.debug);
+  launcher.on('data', console.log);
+}
+
+const login = async () => {
+  let username, pass
+
+  try {
+    username = await promptly.prompt('Mojang Username/Email: ')
+    pass = await promptly.password('Mojang Password: ')
+  } catch (err) {
+    console.log()
+    log.fatal('failed to get user input: %s', err.message || err)
+    process.exit(1)
+  }
+
+  let auth
+  try {
+    auth = await Authenticator.getAuth(username, pass)
+  } catch(err) {
+    log.fatal('failed to get login: %s', err.message || err)
+    process.exit(1)
+  }
+
+  try {
+    await modpack.saveAuth(auth)
+  } catch(err) {
+    log.fatal('failed to save auth: %s', err.message || err)
+    process.exit(1)
+  }
+
+  log.success('logged in as %s', auth.name)
+}
+
 const g = chalk.green
 const gr = chalk.grey
 
@@ -105,6 +183,8 @@ const HELP_HEADER = `
 const commands = {
   build,
   install,
+  login,
+  launch,
   version: () => {
     const v = require('./package.json').version
     console.log('modpacker v%s', v)
@@ -141,6 +221,26 @@ const commands = {
 
     const commandHelp = {
       help: sections,
+      launch: [
+        {
+          header: 'modpacker launch',
+          content: ['Usage: modpacker launch <modpack-name> [options...]', 'Launches a modpack']
+        },
+        {
+          header: 'Command Options',
+          content: []
+        }
+      ],
+      login: [
+        {
+          header: 'modpacker login',
+          content: ['Usage: modpacker login [options...]', 'Login to Mojang servers for online-mode']
+        },
+        {
+          header: 'Command Options',
+          content: []
+        }
+      ],
       build: [
         {
           header: 'modpacker build',
@@ -180,7 +280,6 @@ const commands = {
 }
 
 // TLA wrapper
-// TODO(jaredallard): add help
 const main = async () => {
   const fn = commands[options.command]
   if (fn) {
