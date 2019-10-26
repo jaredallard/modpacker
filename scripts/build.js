@@ -51,7 +51,6 @@ const build = async () => {
       target,
       loglevel: 'silent',
       cwd: path.join(__dirname, '..'),
-      resources: ['node_modules/minecraft-launcher-core/java/Pack200.jar'],
       output: path.join(buildBase, output),
     })
 

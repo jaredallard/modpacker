@@ -126,13 +126,18 @@ const launch = async () => {
     memory: {
       max: "8000",
       min: "4000"
+    },
+    overrides: {
+      url: {
+        mavenForge: 'https://search.maven.org/remotecontent?filepath='
+      }
     }
   }
 
   launcher.launch(opts);
 
   launcher.on('debug', log.debug);
-  launcher.on('data', console.log);
+  launcher.on('data', process.stdout.write);
 }
 
 const login = async () => {
