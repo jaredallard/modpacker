@@ -169,7 +169,7 @@ const g = chalk.green
 const gr = chalk.grey
 
 const CLI_TITLE = chalk.bold.underline('modpacker')
-const CLI_DESCRIPTION = 'A CLI, minecraft launcher compatible, minecraft modpack bundler and installer'
+const CLI_DESCRIPTION = '✨ run and create modded minecraft installations from the CLI'
 const CLI_USAGE = 'Usage: `modpacker <command> [options ...]`'
 
 const HELP_HEADER = `
@@ -185,6 +185,21 @@ const commands = {
   install,
   login,
   launch,
+  list: async () => {
+    const config = await modpack.loadModpackerConfig()
+
+    let reply = ''
+    for (const modpackName of Object.keys(config.installedModpacks)) {
+      const modpack = config.installedModpacks[modpackName]
+      reply += `${modpack.name} v${modpack.version}`
+    }
+
+    if (!reply) {
+      reply = 'No modpacks installed'
+    }
+
+    console.log(reply)
+  },
   version: () => {
     const v = require('./package.json').version
     console.log('modpacker v%s', v)
@@ -210,7 +225,10 @@ const commands = {
         content: [
           { name: 'build', summary: 'Build a modpack' },
           { name: 'version', summary: 'Print the version.' },
-          { name: 'install', summary: 'Install a modpack' }
+          { name: 'install', summary: 'Install a modpack' },
+          { name: 'login', summary: 'Login to a Mojang Account' },
+          { name: 'launch', summary: 'Launch a modpack' },
+          { name: 'list', summary: 'List installed modpacks' }
         ]
       },
       {

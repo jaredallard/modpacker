@@ -1,6 +1,6 @@
 # modpacker
 
-A CLI, minecraft launcher compatible, minecraft modpack bundler and installer
+Modpacker is a modded minecraft installer and creator that runs entirely from the CLI
 
 ![modpacker help screen](.github/modpacker.png)
 
