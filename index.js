@@ -115,7 +115,7 @@ const launch = async () => {
 
   const opts = {
     authorization: await modpack.loadAuth(),
-    root: path.join(await modpack.getMinecraftHome(), 'modpacks/', path.normalize(modpackName).replace(/^(\.\.(\/|\\|$))+/, '')),
+    root: path.join(await modpack.getMinecraftHome(), 'modpacks/', path.normalize(modpackName).replace(/^(\.\.(\/|\\|$))+/, '').toLowerCase()),
 
     // TODO(jaredallard): don't include this unless we need too
     forge: path.join(await modpack.getMinecraftHome(), 'forge/', modpackConfig.forge.version, 'forge.jar'),
