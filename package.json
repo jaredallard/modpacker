@@ -20,7 +20,7 @@
     "fs-extra": "^8.1.0",
     "js-yaml": "^3.13.1",
     "lodash.clonedeep": "^4.5.0",
-    "minecraft-launcher-core": "^3.11.2",
+    "minecraft-launcher-core": "git+ssh://git@github.com/jaredallard/minecraftlauncher-core",
     "promptly": "^3.0.3",
     "request": "^2.88.0",
     "signale": "^1.4.0",
@@ -33,6 +33,6 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "nexe": "^3.3.2"
+    "nexe": "^4.0.0-beta.3"
   }
 }
