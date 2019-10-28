@@ -15,7 +15,6 @@ const fs = require('fs-extra')
 const path = require('path')
 const chalk = require('chalk')
 const commandLineArgs = require('command-line-args')
-const promptly = require('promptly')
 const inquirer = require('inquirer')
 const { Client, Authenticator } = require('minecraft-launcher-core');
 const optionDefinitions = [
@@ -138,20 +137,21 @@ const launch = async () => {
 }
 
 const login = async () => {
-  let username, pass
-
-  try {
-    username = await promptly.prompt('Mojang Username/Email: ')
-    pass = await promptly.password('Mojang Password: ')
-  } catch (err) {
-    console.log()
-    log.fatal('failed to get user input: %s', err.message || err)
-    process.exit(1)
-  }
+  const resp = await inquirer.prompt([{
+    type: 'input',
+    name: 'username',
+    message: 'Mojang Username/Email:',
+  },
+  {
+    type: 'password',
+    name: 'pass',
+    message: 'Mojang Password:',
+    mask: '*'
+  }])
 
   let auth
   try {
-    auth = await Authenticator.getAuth(username, pass)
+    auth = await Authenticator.getAuth(resp.username, resp.pass)
   } catch(err) {
     log.fatal('failed to get login: %s', err.message || err)
     process.exit(1)
