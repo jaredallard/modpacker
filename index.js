@@ -11,6 +11,7 @@
 const log = require('signale');
 const commandLineUsage = require('command-line-usage')
 const modpack = require('./lib/modpack')
+const fs = require('fs-extra')
 const path = require('path')
 const chalk = require('chalk')
 const commandLineArgs = require('command-line-args')
@@ -81,7 +82,7 @@ const install = async () => {
   try {
     await modpack.installModpack(modpackURL)
   } catch (err) {
-    log.fatal('failed to install modpack: %s', err)
+    log.fatal('failed to install modpack: %s', err.message || err)
     process.exit(1)
   }
 
@@ -104,7 +105,7 @@ const launch = async () => {
   const config = await modpack.loadModpackerConfig()
   const modpackConfig = config.installedModpacks[modpackName]
 
-  if (!modpack) {
+  if (!modpackConfig) {
     log.fatal('modpack %s isnt installed', modpackName)
     process.exit(1)
   }
@@ -206,7 +207,8 @@ const commands = {
     console.log(reply)
   },
   version: () => {
-    const v = require('./package.json').version
+    // using fs.readFileSync here for nexe
+    const v = JSON.parse(fs.readFileSync('./package.json')).version
     console.log('modpacker v%s', v)
   },
   help: () => {
@@ -308,6 +310,25 @@ const main = async () => {
   if (fn) {
     await fn()
   } else {
+    // assume we're running in an embedded scenario at first, if not then we'll just show the help screen
+    const p = path.join(process.cwd(), "modpack.yaml")
+    if (await fs.pathExists(p)) {
+      log.info('running installing modpack in current directory and launching it ...')
+
+      commandOptions[0] = process.cwd()
+      await install()
+
+      log.info('logging into minecraft')
+      await login()
+
+
+      log.info('launching modpack')
+      const config = await modpack.loadModpackConfig(p)
+      commandOptions[0] = config.name
+      await launch()
+
+      return
+    }
     await commands.help()
   }
 }

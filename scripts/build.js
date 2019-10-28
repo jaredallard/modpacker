@@ -49,6 +49,9 @@ const build = async () => {
       input: 'index.js',
       name: 'modpacker',
       target,
+      resources: [
+        'package.json'
+      ],
       loglevel: 'silent',
       cwd: path.join(__dirname, '..'),
       output: path.join(buildBase, output),

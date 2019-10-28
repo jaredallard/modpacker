@@ -1,6 +1,6 @@
 {
   "name": "modpacker",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "description": "A Minecraft ModPack creator",
   "main": "index.js",
   "repository": "git+ssh://git@github.com/jaredallard/modpacker",
