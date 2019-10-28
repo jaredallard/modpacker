@@ -138,7 +138,7 @@ const launch = async () => {
   launcher.launch(opts);
 
   launcher.on('debug', log.debug);
-  launcher.on('data', data => process.stdout.write(new Buffer(data)));
+  launcher.on('data', data => process.stdout.write(Buffer.from(data)));
 }
 
 const login = async () => {
