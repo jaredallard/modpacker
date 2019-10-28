@@ -16,6 +16,7 @@ const path = require('path')
 const chalk = require('chalk')
 const commandLineArgs = require('command-line-args')
 const promptly = require('promptly')
+const inquirer = require('inquirer')
 const { Client, Authenticator } = require('minecraft-launcher-core');
 const optionDefinitions = [
   { name: 'command', defaultOption: true }
@@ -127,11 +128,6 @@ const launch = async () => {
     memory: {
       max: "8000",
       min: "4000"
-    },
-    overrides: {
-      url: {
-        mavenForge: 'https://search.maven.org/remotecontent?filepath='
-      }
     }
   }
 
@@ -328,6 +324,26 @@ const main = async () => {
       await launch()
 
       return
+    } else { // check and see if we have any modpacks, just wrap launch then
+      const config = await modpack.loadModpackerConfig()
+      if (Object.keys(config.installedModpacks).length !== 0) {
+        const choices = await inquirer
+          .prompt({
+            type: 'list',
+            name: 'modpack',
+            message: 'Which modpack would you like to launch? (^C to exit):',
+            choices: Object.keys(config.installedModpacks)
+          })
+        
+        if (!choices.modpack) {
+          return
+        }
+
+        commandOptions[0] = choices.modpack
+        await launch()
+        return
+      }
+
     }
     await commands.help()
   }
