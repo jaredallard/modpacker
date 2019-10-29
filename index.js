@@ -119,7 +119,12 @@ const launch = async () => {
       log.warn('failed to refresh auth: %s', err.message || err)
 
       // attempt to re-login
-      await login()
+      try {
+        await login()
+        config.auth = await modpack.loadAuth()
+      } catch (err ) {
+        log.error('failed to re-authenticate, assuming no authentication')
+      }
     }
   }
 
