@@ -117,6 +117,9 @@ const launch = async () => {
       await modpack.saveAuth(config.auth)
     } catch (err) {
       log.warn('failed to refresh auth: %s', err.message || err)
+
+      // attempt to re-login
+      await login()
     }
   }
 
