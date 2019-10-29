@@ -110,6 +110,16 @@ const launch = async () => {
     process.exit(1)
   }
 
+  // check if we can refresh our auth
+  if (config.auth) {
+    try {
+      config.auth = await Authenticator.refreshAuth(config.auth.access_token, config.auth.client_token, config.auth.selected_profile)
+      await modpack.saveAuth(config.auth)
+    } catch (err) {
+      log.warn('failed to refresh auth: %s', err.message || err)
+    }
+  }
+
   log.info('launching modpack %s', modpackName)
 
   const launcher = new Client()
