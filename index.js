@@ -47,6 +47,7 @@ const build = async () => {
 
   log.info('building Modpack %s version %s', config.name, config.version)
   const manifest = await modpack.buildModpack(config, modpackPath)
+  config = await modpack.loadModpackConfig(path.join(modpackPath, 'modpack.yaml'))
 
   const { newMods, removedMods } = manifest.changes
   if (newMods.length === 0 && removedMods.length === 0) {
@@ -324,7 +325,7 @@ const main = async () => {
   if (fn) {
     await fn()
   } else {
-    // assume we're running in an embedded scenario at first, if not then we'll just show the help screen
+    // assume we're running in an embedded scenario at first
     const p = path.join(process.cwd(), "modpack.yaml")
     if (await fs.pathExists(p)) {
       log.info('running installing modpack in current directory and launching it ...')
